@@ -1,0 +1,85 @@
+---
+import Layout from "../layouts/Layout.astro";
+const certs = [
+  { area: "site", claim: "[placeholder] TLS, HSTS, and a strict CSP — the front door is sealed.", status: "todo" },
+  { area: "architecture", claim: "[placeholder] Hardened, least-privilege infra with documented trust boundaries.", status: "todo" },
+  { area: "webapp", claim: "[placeholder] No injection, no leaky headers, no surprises in the response.", status: "todo" },
+  { area: "server", claim: "[placeholder] Patched, monitored, and locked down to the essentials.", status: "todo" },
+];
+---
+
+<Layout title="proof — breach:d" description="Receipts: this site is configured securely.">
+  <section class="page shell">
+    <p class="eyebrow">// receipts</p>
+    <h1 class="page-title">Proof</h1>
+    <p class="sub">
+      A security site should be able to prove its own. This page will hold the evidence — config,
+      architecture, web app, and server. Placeholders for now.
+    </p>
+
+    <div class="certs">
+      {
+        certs.map((c) => (
+          <div class="cert">
+            <div class="cert-head">
+              <span class="cert-area">{c.area}</span>
+              <span class={"cert-status " + c.status}>{c.status === "todo" ? "pending" : "verified"}</span>
+            </div>
+            <p>{c.claim}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .sub {
+    color: var(--text-dim);
+    max-width: 60ch;
+    margin-bottom: 3rem;
+  }
+  .certs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+  .cert {
+    padding: 1.6rem;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: rgba(38, 28, 53, 0.4);
+  }
+  .cert-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+  .cert-area {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--c-primary);
+    text-transform: capitalize;
+  }
+  .cert-status {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+  }
+  .cert-status.todo {
+    color: var(--text-faint);
+  }
+  .cert-status.done {
+    color: var(--c-accent);
+    border-color: rgba(99, 207, 183, 0.4);
+  }
+  .cert p {
+    margin: 0;
+    font-size: 0.92rem;
+  }
+</style>

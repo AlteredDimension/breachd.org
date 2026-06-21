@@ -1,0 +1,86 @@
+---
+import Layout from "../layouts/Layout.astro";
+const things = [
+  { k: "blog / write-ups", v: "thoughts, anecdotes from cybersecurity, and the occasional deep dive." },
+  { k: "portfolio", v: "the things I've made — and a few I took apart." },
+  { k: "easter eggs", v: "there are doors here that aren't on the map. keep your eyes open." },
+  { k: "above all else", v: "fun. this is a place to enjoy the creativity of it." },
+];
+---
+
+<Layout title="about — breach:d" description="What breach:d is, and why it exists.">
+  <section class="page shell">
+    <p class="eyebrow">// —help</p>
+    <h1 class="page-title">What the hell is this?</h1>
+    <p class="lede">
+      breach:d is a personal domain — a place to enjoy the creativity of it. It's themed after
+      <em>Alter</em>, with a cyberpunk undertone and an ominous flare that's meant to be
+      <em>mysterious</em>, not unsettling. Part signal, part playground.
+    </p>
+
+    <ul class="defs">
+      {
+        things.map((t) => (
+          <li>
+            <span class="def-k">{t.k}</span>
+            <span class="def-v">{t.v}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="whisper">// who — is the threat?</p>
+  </section>
+</Layout>
+
+<style>
+  .lede {
+    font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+    max-width: 56ch;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .lede em {
+    color: var(--c-primary);
+    font-style: normal;
+  }
+  .defs {
+    list-style: none;
+    padding: 0;
+    margin: 3rem 0 0;
+    display: grid;
+    gap: 0;
+    max-width: 760px;
+  }
+  .defs li {
+    display: grid;
+    grid-template-columns: minmax(160px, 0.4fr) 1fr;
+    gap: 1.5rem;
+    padding: 1.4rem 0;
+    border-top: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .def-k {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+  }
+  .def-v {
+    color: var(--text-dim);
+  }
+  .whisper {
+    font-family: var(--font-mono);
+    color: var(--text-faint);
+    margin-top: 4rem;
+    letter-spacing: 0.2em;
+    opacity: 0.5;
+  }
+  @media (max-width: 600px) {
+    .defs li {
+      grid-template-columns: 1fr;
+      gap: 0.3rem;
+    }
+  }
+</style>

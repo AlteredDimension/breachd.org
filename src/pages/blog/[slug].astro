@@ -1,0 +1,66 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { posts, TAGS } from "../../data/posts.js";
+
+export function getStaticPaths() {
+  return posts.map((p) => ({ params: { slug: p.slug }, props: { post: p } }));
+}
+
+const { post } = Astro.props;
+const accent = TAGS[post.tags[0]] || "#c89cfb";
+---
+
+<Layout title={`${post.title} — breach:d`} description={post.excerpt}>
+  <article class="page shell post">
+    <a class="back" href="/blog">← back to the feed</a>
+    <div class="post-tags">
+      {post.tags.map((t) => <span style={`color:${TAGS[t]}`}>#{t}</span>)}
+    </div>
+    <h1 class="post-title" style={`--accent:${accent}`}>{post.title}</h1>
+    <time>{post.date}</time>
+    {!post.real && <p class="placeholder">This is a placeholder draft — real copy coming.</p>}
+    <div class="prose">
+      {post.body.map((para) => <p>{para}</p>)}
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .post {
+    max-width: 760px;
+  }
+  .back {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+  }
+  .post-tags {
+    display: flex;
+    gap: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    margin: 1.6rem 0 0.6rem;
+  }
+  .post-title {
+    font-size: clamp(2rem, 6vw, 3.6rem);
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    margin: 0.4rem 0;
+  }
+  time {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+  }
+  .prose {
+    margin-top: 2.4rem;
+  }
+  .prose p {
+    font-size: 1.08rem;
+    line-height: 1.8;
+    margin-bottom: 1.6rem;
+    color: var(--text-dim);
+  }
+</style>

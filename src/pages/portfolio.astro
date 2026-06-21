@@ -1,0 +1,104 @@
+---
+import Layout from "../layouts/Layout.astro";
+const projects = [
+  { title: "[placeholder] project one", tag: "web", note: "Lorem ipsum dolor sit amet — a short line about what it does." },
+  { title: "[placeholder] project two", tag: "security", note: "Consectetur adipiscing elit, sed do eiusmod tempor." },
+  { title: "[placeholder] project three", tag: "tooling", note: "Ut enim ad minim veniam, quis nostrud exercitation." },
+];
+---
+
+<Layout title="portfolio — breach:d" description="Things I've built and broken.">
+  <section class="page shell">
+    <p class="eyebrow">// the work</p>
+    <h1 class="page-title">Portfolio</h1>
+    <p class="sub">A scaffold for now — real case studies land here soon.</p>
+
+    <div class="grid">
+      <article class="feature">
+        <img src="/img/alter-portfolio.jpg" alt="Alter character art" loading="lazy" />
+        <div class="feature-body">
+          <span class="ftag">featured</span>
+          <h3>[placeholder] flagship build</h3>
+          <p>
+            [placeholder] Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+            accusantium doloremque laudantium, totam rem aperiam.
+          </p>
+        </div>
+      </article>
+
+      {
+        projects.map((p) => (
+          <article class="proj">
+            <span class="ptag">{p.tag}</span>
+            <h3>{p.title}</h3>
+            <p>{p.note}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .sub {
+    color: var(--text-dim);
+    margin-bottom: 3rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.4rem;
+  }
+  .feature {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(220px, 0.8fr) 1fr;
+    gap: 0;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: rgba(38, 28, 53, 0.5);
+  }
+  .feature img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 280px;
+  }
+  .feature-body {
+    padding: 2.4rem;
+    align-self: center;
+  }
+  .ftag,
+  .ptag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+  }
+  .proj {
+    padding: 1.8rem;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: rgba(38, 28, 53, 0.4);
+    transition: transform 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+  .proj:hover {
+    transform: translateY(-4px);
+    border-color: rgba(196, 156, 251, 0.4);
+  }
+  .proj h3,
+  .feature-body h3 {
+    margin: 0.6rem 0;
+    font-size: 1.3rem;
+  }
+  @media (max-width: 720px) {
+    .feature {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
