@@ -16,8 +16,19 @@ function useReducedMotion() {
   return reduced;
 }
 
+function useTheme() {
+  const [theme, setTheme] = useState("dark");
+  useEffect(() => {
+    setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+    const onChange = (e) => setTheme(e.detail === "light" ? "light" : "dark");
+    window.addEventListener("themechange", onChange);
+    return () => window.removeEventListener("themechange", onChange);
+  }, []);
+  return theme;
+}
+
 // drifting glow particles, gently parallaxing toward the pointer
-function Particles({ count }) {
+function Particles({ count, light }) {
   const ref = useRef();
   const { viewport } = useThree();
 
@@ -54,20 +65,20 @@ function Particles({ count }) {
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.06}
+        size={light ? 0.05 : 0.06}
         sizeAttenuation
         vertexColors
         transparent
-        opacity={0.85}
+        opacity={light ? 0.55 : 0.85}
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={light ? THREE.NormalBlending : THREE.AdditiveBlending}
       />
     </points>
   );
 }
 
 // the "breach" — a slow, ominous wireframe portal that reacts subtly to the pointer
-function Portal() {
+function Portal({ light }) {
   const ref = useRef();
   useFrame((state, delta) => {
     if (!ref.current) return;
@@ -82,11 +93,11 @@ function Portal() {
     <mesh ref={ref} position={[0, 0, -2]}>
       <icosahedronGeometry args={[3.2, 1]} />
       <meshBasicMaterial
-        color="#be6de6"
+        color={light ? "#9a55d8" : "#be6de6"}
         wireframe
         transparent
-        opacity={0.12}
-        blending={THREE.AdditiveBlending}
+        opacity={light ? 0.16 : 0.12}
+        blending={light ? THREE.NormalBlending : THREE.AdditiveBlending}
       />
     </mesh>
   );
@@ -94,6 +105,8 @@ function Portal() {
 
 export default function Background() {
   const reduced = useReducedMotion();
+  const theme = useTheme();
+  const light = theme === "light";
   const [count, setCount] = useState(900);
   const [enabled, setEnabled] = useState(true);
 
@@ -113,9 +126,9 @@ export default function Background() {
         dpr={[1, 1.6]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       >
-        <fog attach="fog" args={["#150f1f", 8, 26]} />
-        <Portal />
-        <Particles count={count} />
+        <fog attach="fog" args={[light ? "#e9e3f5" : "#150f1f", 8, 26]} />
+        <Portal light={light} />
+        <Particles count={count} light={light} />
       </Canvas>
     </div>
   );

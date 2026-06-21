@@ -28,6 +28,16 @@ const path = Astro.url.pathname;
     <meta name="theme-color" content="#150f1f" />
     <title>{title}</title>
 
+    <!-- set theme before paint to avoid a flash -->
+    <script is:inline>
+      (() => {
+        try {
+          const t = localStorage.getItem("breachd_theme");
+          if (t === "light") document.documentElement.dataset.theme = "light";
+        } catch (e) {}
+      })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -44,9 +54,28 @@ const path = Astro.url.pathname;
     <footer class="site-footer">
       <div class="shell">
         <span>// breach:d — {new Date().getFullYear()}</span>
-        <span>built in the dark · charlotte, nc</span>
+        <button class="theme-flip" type="button" aria-label="Toggle light and dark mode">
+          <span class="dot"></span>
+          <span class="flip-off">lights on</span>
+          <span class="flip-on">lights off</span>
+        </button>
       </div>
     </footer>
+
+    <script>
+      // theme flipper — persist + notify the 3D background
+      const flip = document.querySelector(".theme-flip");
+      flip?.addEventListener("click", () => {
+        const root = document.documentElement;
+        const next = root.dataset.theme === "light" ? "dark" : "light";
+        if (next === "light") root.dataset.theme = "light";
+        else delete root.dataset.theme;
+        try {
+          localStorage.setItem("breachd_theme", next);
+        } catch (e) {}
+        window.dispatchEvent(new CustomEvent("themechange", { detail: next }));
+      });
+    </script>
 
     <script>
       import { initEasterEggs } from "../scripts/easter-eggs.js";
