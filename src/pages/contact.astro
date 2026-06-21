@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import EyeForm from "../components/react/EyeForm.jsx";
+import Eyes from "../components/react/Eyes.jsx";
 ---
 
 <Layout title="contact — breach:d" description="Send a signal. I'm watching.">
@@ -11,9 +12,13 @@ import EyeForm from "../components/react/EyeForm.jsx";
       <p class="sub">
         Say something interesting. The eyes follow your cursor — and so do I.
       </p>
+      <Eyes client:visible />
       <p class="note">// no backend is wired yet — this is a working scaffold.</p>
     </div>
-    <EyeForm client:visible />
+
+    <div class="form-col">
+      <EyeForm client:visible />
+    </div>
   </section>
 </Layout>
 
@@ -22,21 +27,35 @@ import EyeForm from "../components/react/EyeForm.jsx";
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 3rem;
-    align-items: center;
+    align-items: start;
+  }
+  .intro-col {
+    display: grid;
+    gap: 1.4rem;
+    justify-items: start;
   }
   .sub {
     color: var(--text-dim);
     max-width: 36ch;
+    margin: 0;
   }
   .note {
     font-family: var(--font-mono);
     font-size: 0.74rem;
     color: var(--text-faint);
     letter-spacing: 0.08em;
+    margin: 0;
+  }
+  /* stagger: the form sits ~50% lower than the intro block */
+  .form-col {
+    margin-top: 22vh;
   }
   @media (max-width: 820px) {
     .contact {
       grid-template-columns: 1fr;
+    }
+    .form-col {
+      margin-top: 0;
     }
   }
 </style>
