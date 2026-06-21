@@ -78,7 +78,8 @@ const cards = [
     cy += (ty - cy) * 0.08;
     for (const el of layers) {
       const d = parseFloat(el.getAttribute("data-depth") || "0") * 100;
-      el.style.transform = `translate3d(${cx * d}px, ${cy * d}px, 0)`;
+      // use `translate` (independent of `transform`) so element transforms survive
+      el.style.translate = `${cx * d}px ${cy * d}px`;
     }
     raf = requestAnimationFrame(loop);
   }
@@ -111,7 +112,8 @@ const cards = [
     position: absolute;
     right: -4%;
     top: 50%;
-    transform: translateY(-50%);
+    /* shifted down ~30% from center for a buffer below the breach:d logo */
+    transform: translateY(-20%);
     height: min(92vh, 880px);
     width: auto;
     object-fit: contain;
