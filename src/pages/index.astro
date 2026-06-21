@@ -118,6 +118,9 @@ const cards = [
     width: auto;
     object-fit: contain;
     object-position: bottom;
+    /* shifted down 40% so the head clears the breach:d wordmark
+       (parallax uses the `translate` property, so this transform is free) */
+    transform: translateY(40%);
     -webkit-mask-image: radial-gradient(62% 96% at 54% 50%, #000 70%, transparent 95%);
     mask-image: radial-gradient(62% 96% at 54% 50%, #000 70%, transparent 95%);
     filter: saturate(1.05) contrast(1.02);
