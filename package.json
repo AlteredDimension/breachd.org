@@ -1,10 +1,19 @@
 {
   "name": "breachd.org",
-  "type": "module",
   "version": "0.0.1",
-  "engines": {
-    "node": ">=22.12.0"
+  "description": "```sh npm create astro@latest -- --template basics ```",
+  "homepage": "https://github.com/AlteredDimension/breachd.org#readme",
+  "bugs": {
+    "url": "https://github.com/AlteredDimension/breachd.org/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlteredDimension/breachd.org.git"
+  },
+  "license": "ISC",
+  "author": "altered dimension",
+  "type": "module",
+  "main": "index.js",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -13,5 +22,9 @@
   },
   "dependencies": {
     "astro": "^6.4.7"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=22.12.0"
   }
 }
