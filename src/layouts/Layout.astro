@@ -1,23 +1,56 @@
+---
+import "../styles/global.css";
+import Nav from "../components/Nav.astro";
+import Background from "../components/react/Background.jsx";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = "breach:d",
+  description = "A personal signal in the noise — write-ups, work, and the occasional door that shouldn't be there.",
+} = Astro.props;
+const path = Astro.url.pathname;
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>breach:d</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta name="theme-color" content="#150f1f" />
+    <title>{title}</title>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <Background client:idle />
+    <Nav path={path} />
+
+    <slot />
+
+    <footer class="site-footer">
+      <div class="shell">
+        <span>// breach:d — {new Date().getFullYear()}</span>
+        <span>built in the dark · charlotte, nc</span>
+      </div>
+    </footer>
+
+    <script>
+      import { initEasterEggs } from "../scripts/easter-eggs.js";
+      initEasterEggs();
+    </script>
+  </body>
+</html>
