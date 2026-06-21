@@ -1,11 +1,274 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import Intro from "../components/react/Intro.jsx";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const cards = [
+  { href: "/blog", label: "Blog", note: "write-ups, anecdotes, and signal from the field" },
+  { href: "/portfolio", label: "Portfolio", note: "things I've built and broken" },
+  { href: "/proof", label: "Proof", note: "receipts — this site is locked down" },
+  { href: "/about", label: "About", note: "what this place is, and why" },
+];
 ---
 
 <Layout>
-	<Welcome />
+  <Intro client:load />
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="parallax" data-parallax>
+        <img
+          class="hero-art"
+          data-depth="0.04"
+          src="/img/alter-hero.png"
+          alt="Alter — a masked figure surrounded by the question: who are you?"
+          fetchpriority="high"
+        />
+        <div class="hero-copy shell">
+          <p class="eyebrow" data-depth="0.018">// signal acquired</p>
+          <h1 class="hero-mark" data-depth="0.01">
+            breach<span class="colon">:</span><span class="d">d</span>
+          </h1>
+          <p class="hero-tag" data-depth="0.026">
+            A door that shouldn't be here. Step through anyway.
+          </p>
+          <div class="hero-cta" data-depth="0.034">
+            <a class="btn" href="/blog">enter the feed</a>
+            <a class="btn ghost" href="/about">what is this?</a>
+          </div>
+        </div>
+      </div>
+
+      <a class="scroll-cue" href="#paths" aria-label="Scroll down">
+        <span></span>
+      </a>
+    </section>
+
+    <!-- PATHS -->
+    <section class="paths page" id="paths">
+      <div class="shell">
+        <p class="eyebrow">// choose a path</p>
+        <h2 class="section-title">Every door leads somewhere.<br />I've seen them all.</h2>
+        <div class="path-grid">
+          {
+            cards.map((c) => (
+              <a class="path" href={c.href}>
+                <span class="path-sep" />
+                <h3>{c.label}</h3>
+                <p>{c.note}</p>
+                <span class="path-arrow">→</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
 </Layout>
+
+<script>
+  // mouse-move parallax — translate layers by their data-depth
+  const wrap = document.querySelector("[data-parallax]");
+  const layers = [...document.querySelectorAll("[data-depth]")];
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+
+  function loop() {
+    cx += (tx - cx) * 0.08;
+    cy += (ty - cy) * 0.08;
+    for (const el of layers) {
+      const d = parseFloat(el.getAttribute("data-depth") || "0") * 100;
+      el.style.transform = `translate3d(${cx * d}px, ${cy * d}px, 0)`;
+    }
+    raf = requestAnimationFrame(loop);
+  }
+
+  if (wrap && !reduce) {
+    window.addEventListener("mousemove", (e) => {
+      tx = e.clientX / window.innerWidth - 0.5;
+      ty = e.clientY / window.innerHeight - 0.5;
+    });
+    loop();
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+  }
+  .parallax {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    align-items: center;
+  }
+  .hero-art {
+    position: absolute;
+    right: -4%;
+    top: 50%;
+    transform: translateY(-50%);
+    height: min(92vh, 880px);
+    width: auto;
+    object-fit: contain;
+    -webkit-mask-image: radial-gradient(60% 75% at 55% 45%, #000 55%, transparent 90%);
+    mask-image: radial-gradient(60% 75% at 55% 45%, #000 55%, transparent 90%);
+    filter: saturate(1.05) contrast(1.02);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .hero-copy {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+  .hero-mark {
+    font-size: clamp(4rem, 16vw, 12rem);
+    line-height: 0.9;
+    margin: 0.1em 0 0.2em;
+    text-shadow: 0 0 60px rgba(21, 15, 31, 0.8);
+  }
+  .hero-mark .colon {
+    color: var(--c-accent);
+    text-shadow: var(--glow-accent);
+  }
+  .hero-mark .d {
+    color: var(--c-primary);
+  }
+  .hero-tag {
+    font-family: var(--font-mono);
+    font-size: clamp(0.95rem, 2vw, 1.3rem);
+    color: var(--text-dim);
+    max-width: 30ch;
+    margin: 0 0 2rem;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.7rem;
+    border-radius: 999px;
+    color: #150f1f;
+    background: linear-gradient(120deg, var(--c-primary), var(--c-accent));
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow);
+    color: #150f1f;
+  }
+  .btn.ghost {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text);
+  }
+  .btn.ghost:hover {
+    border-color: var(--c-accent);
+    color: var(--c-accent);
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 2.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px;
+    height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    display: grid;
+    justify-items: center;
+    padding-top: 8px;
+    z-index: 3;
+  }
+  .scroll-cue span {
+    width: 4px;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--c-accent);
+    animation: drop 1.8s var(--ease) infinite;
+  }
+  @keyframes drop {
+    0% { transform: translateY(0); opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: translateY(16px); opacity: 0; }
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 5vw, 3.4rem);
+    margin-bottom: 3rem;
+  }
+  .path-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+  }
+  .path {
+    position: relative;
+    display: block;
+    padding: 1.8rem 1.6rem;
+    border-radius: 16px;
+    background: rgba(38, 28, 53, 0.5);
+    border: 1px solid var(--line);
+    color: var(--text);
+    overflow: hidden;
+    transition: transform 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+  .path-sep {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--c-primary), transparent 80%);
+    transform: scaleX(0.5);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease);
+  }
+  .path:hover {
+    transform: translateY(-4px);
+    border-color: rgba(99, 207, 183, 0.4);
+  }
+  .path:hover .path-sep {
+    transform: scaleX(1);
+  }
+  .path h3 {
+    font-size: 1.4rem;
+    margin: 0.4rem 0 0.4rem;
+  }
+  .path p {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  .path-arrow {
+    position: absolute;
+    top: 1.6rem;
+    right: 1.6rem;
+    color: var(--c-accent);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: all 0.3s var(--ease);
+  }
+  .path:hover .path-arrow {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 820px) {
+    .hero-art {
+      opacity: 0.28;
+      right: -20%;
+      height: 70vh;
+    }
+  }
+</style>
