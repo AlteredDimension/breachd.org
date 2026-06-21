@@ -121,6 +121,9 @@ const cards = [
     width: auto;
     object-fit: contain;
     object-position: bottom;
+    /* nudged left 30% / down 10% of the image box; down is small enough that the
+       hero clip line stays inside the mask's transparent zone (no hard cut) */
+    transform: translate(-30%, 10%);
     -webkit-mask-image: radial-gradient(58% 86% at 55% 44%, #000 62%, transparent 90%);
     mask-image: radial-gradient(58% 86% at 55% 44%, #000 62%, transparent 90%);
     filter: saturate(1.05) contrast(1.02);
