@@ -111,18 +111,18 @@ const cards = [
   .hero-art {
     position: absolute;
     right: -4%;
-    /* anchored to the bottom so the figure shows from head down to the waist */
+    /* Anchored to the bottom and sized so the WHOLE soft-masked oval stays
+       inside the hero — no transform past the overflow edge (that caused the
+       hard horizontal cut). The mask fades to transparent before the image's
+       bottom edge, so there is never a hard line. */
     bottom: 0;
     top: auto;
-    height: min(74vh, 720px);
+    height: min(62vh, 640px);
     width: auto;
     object-fit: contain;
     object-position: bottom;
-    /* shifted down 40% so the head clears the breach:d wordmark
-       (parallax uses the `translate` property, so this transform is free) */
-    transform: translateY(40%);
-    -webkit-mask-image: radial-gradient(62% 96% at 54% 50%, #000 70%, transparent 95%);
-    mask-image: radial-gradient(62% 96% at 54% 50%, #000 70%, transparent 95%);
+    -webkit-mask-image: radial-gradient(58% 86% at 55% 44%, #000 62%, transparent 90%);
+    mask-image: radial-gradient(58% 86% at 55% 44%, #000 62%, transparent 90%);
     filter: saturate(1.05) contrast(1.02);
     pointer-events: none;
     z-index: 1;
