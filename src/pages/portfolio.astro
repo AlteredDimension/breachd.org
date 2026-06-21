@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import GithubRepos from "../components/react/GithubRepos.jsx";
 const projects = [
   { title: "[placeholder] project one", tag: "web", note: "Lorem ipsum dolor sit amet — a short line about what it does." },
   { title: "[placeholder] project two", tag: "security", note: "Consectetur adipiscing elit, sed do eiusmod tempor." },
@@ -36,6 +37,8 @@ const projects = [
         ))
       }
     </div>
+
+    <GithubRepos client:visible />
   </section>
 </Layout>
 
