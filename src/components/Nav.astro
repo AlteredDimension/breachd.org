@@ -1,66 +1,39 @@
 ---
 const { path = "/" } = Astro.props;
-// Layout per breachd.org_page_selector.excalidraw: an "L" anchored at the
-// top-right corner — top bar (home · about · blog) + right vertical bar
-// (portfolio · proof · contact). Web title sits top-left.
-const topLinks = [
+const links = [
   { href: "/", label: "home" },
   { href: "/about", label: "about" },
-  { href: "/blog", label: "blog" },
-];
-const rightLinks = [
   { href: "/portfolio", label: "portfolio" },
+  { href: "/blog", label: "blog" },
   { href: "/proof", label: "proof" },
   { href: "/contact", label: "contact" },
 ];
-const allLinks = [...topLinks, ...rightLinks];
 const isActive = (href: string) =>
   href === "/" ? path === "/" : path.startsWith(href);
 ---
 
 <header class="nav">
-  <a class="wordmark" href="/" data-wordmark aria-label="breach:d home">
-    breach<span class="colon">:</span><span class="d">d</span>
-  </a>
+  <div class="nav-inner shell">
+    <a class="wordmark" href="/" data-wordmark aria-label="breach:d home">
+      breach<span class="colon">:</span><span class="d">d</span>
+    </a>
 
-  <!-- TOP bar: bold at the right (corner), fades to the left -->
-  <nav class="bar bar-top" aria-label="Primary">
-    {
-      topLinks.map((l) => (
-        <a class:list={["link", { active: isActive(l.href) }]} href={l.href}
-          aria-current={isActive(l.href) ? "page" : undefined}>
-          <span class="label">{l.label}</span>
-          <span class="ind" aria-hidden="true" />
-        </a>
-      ))
-    }
-  </nav>
+    <nav class="links" aria-label="Primary">
+      {
+        links.map((l) => (
+          <a class:list={["link", { active: isActive(l.href) }]} href={l.href}
+            aria-current={isActive(l.href) ? "page" : undefined}>
+            <span class="label">{l.label}</span>
+            <span class="ind" aria-hidden="true" />
+          </a>
+        ))
+      }
+    </nav>
 
-  <!-- RIGHT bar: bold at the top (corner), fades downward -->
-  <nav class="bar bar-right" aria-label="Secondary">
-    {
-      rightLinks.map((l) => (
-        <a class:list={["link", { active: isActive(l.href) }]} href={l.href}
-          aria-current={isActive(l.href) ? "page" : undefined}>
-          <span class="label">{l.label}</span>
-          <span class="ind" aria-hidden="true" />
-        </a>
-      ))
-    }
-  </nav>
-
-  <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
-    <span></span><span></span>
-  </button>
-  <nav class="drawer" aria-label="Mobile">
-    {
-      allLinks.map((l) => (
-        <a class:list={["link", { active: isActive(l.href) }]} href={l.href}>
-          {l.label}
-        </a>
-      ))
-    }
-  </nav>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </div>
 </header>
 
 <script>
@@ -75,16 +48,28 @@ const isActive = (href: string) =>
 <style>
   .nav {
     position: fixed;
-    inset: 0;
+    inset: 0 0 auto 0;
     z-index: 100;
-    pointer-events: none; /* only children are interactive */
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(14px);
+    background: linear-gradient(180deg, rgba(21, 15, 31, 0.72), rgba(21, 15, 31, 0));
+    border-bottom: 1px solid var(--line);
   }
-  .nav > * { pointer-events: auto; }
+  :root[data-theme="light"] .nav {
+    background: linear-gradient(180deg, rgba(245, 242, 251, 0.8), rgba(245, 242, 251, 0));
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 100%;
+  }
 
   .wordmark {
-    position: fixed;
-    top: 22px;
-    left: clamp(20px, 5vw, 56px);
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 1.4rem;
@@ -100,52 +85,24 @@ const isActive = (href: string) =>
   .wordmark .d { color: var(--c-primary); }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-  /* shared frosted bar — blur fades out away from the top-right corner */
-  .bar {
-    position: fixed;
+  .links {
     display: flex;
-    background: linear-gradient(var(--g, to left), rgba(21, 15, 31, 0.66), rgba(21, 15, 31, 0));
-    backdrop-filter: blur(13px);
-    -webkit-backdrop-filter: blur(13px);
-  }
-  .bar-top {
-    top: 0;
-    right: 0;
-    flex-direction: row;
-    gap: clamp(1.4rem, 3vw, 2.8rem);
+    gap: clamp(1rem, 2.4vw, 2.4rem);
     align-items: flex-end;
-    height: var(--nav-h);
-    padding: 0 clamp(20px, 5vw, 56px) 0 3.5rem;
-    /* bold at right corner, fade left */
-    -webkit-mask-image: linear-gradient(to left, #000 62%, transparent);
-    mask-image: linear-gradient(to left, #000 62%, transparent);
-  }
-  .bar-right {
-    --g: to top;
-    top: var(--nav-h);
-    right: 0;
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: flex-end;
-    padding: 1.6rem clamp(20px, 5vw, 56px) 3.5rem;
-    /* bold at top corner, fade down */
-    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
-    mask-image: linear-gradient(to bottom, #000 60%, transparent);
   }
 
   .link {
     position: relative;
+    padding-bottom: 0.6rem;
     font-family: var(--font-mono);
     font-size: 0.78rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--text-dim);
-    padding-bottom: 0.7rem; /* room for the bottom indicator */
     transition: color 0.25s var(--ease);
   }
-  .bar-top .link { padding-bottom: 0.55rem; }
 
-  /* highlight indicator now sits at the BOTTOM of each word */
+  /* underline indicator at the BOTTOM of each word */
   .ind {
     position: absolute;
     left: 0;
@@ -167,12 +124,8 @@ const isActive = (href: string) =>
   .link:hover { color: var(--text); }
   .link.active { color: var(--c-accent); }
 
-  /* mobile */
   .menu-toggle {
     display: none;
-    position: fixed;
-    top: 20px;
-    right: clamp(20px, 5vw, 56px);
     flex-direction: column;
     gap: 5px;
     background: none;
@@ -181,16 +134,15 @@ const isActive = (href: string) =>
     padding: 8px;
   }
   .menu-toggle span { width: 26px; height: 2px; background: var(--c-primary); }
-  .drawer { display: none; }
 
-  @media (max-width: 880px) {
-    .bar-top, .bar-right { display: none; }
+  @media (max-width: 820px) {
     .menu-toggle { display: flex; }
-    .drawer {
-      display: flex;
+    .links {
       position: fixed;
       inset: var(--nav-h) 0 auto 0;
       flex-direction: column;
+      gap: 0;
+      align-items: stretch;
       padding: 1rem clamp(20px, 5vw, 56px) 1.6rem;
       background: rgba(21, 15, 31, 0.96);
       backdrop-filter: blur(18px);
@@ -200,11 +152,11 @@ const isActive = (href: string) =>
       pointer-events: none;
       transition: all 0.3s var(--ease);
     }
-    .nav.open .drawer { transform: none; opacity: 1; pointer-events: auto; }
-    .drawer .link {
-      padding: 1rem 0;
-      font-size: 0.95rem;
-      border-bottom: 1px solid var(--line);
+    .nav.open .links {
+      transform: none;
+      opacity: 1;
+      pointer-events: auto;
     }
+    .link { padding: 1rem 0; font-size: 0.95rem; }
   }
 </style>
