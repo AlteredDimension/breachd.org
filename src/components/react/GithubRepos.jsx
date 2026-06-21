@@ -96,6 +96,7 @@ export default function GithubRepos() {
         .gh{margin-top:5rem;border-top:1px solid var(--line);padding-top:3rem}
         .gh-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.6rem 1.4rem;margin-bottom:2rem}
         .gh-head h2{font-size:clamp(1.6rem,4vw,2.6rem);margin:0}
+        .gh a{text-decoration:none}
         .gh-profile{font-family:var(--font-mono);font-size:.76rem;letter-spacing:.12em;margin-left:auto}
         .gh-note{font-family:var(--font-mono);font-size:.82rem;color:var(--text-faint)}
         .gh-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:2rem;align-items:start}
