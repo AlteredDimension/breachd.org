@@ -111,14 +111,15 @@ const cards = [
   .hero-art {
     position: absolute;
     right: -4%;
-    top: 50%;
-    /* sits in the lower portion so the breach:d logo clears the face */
-    transform: translateY(2%);
-    height: min(92vh, 880px);
+    /* anchored to the bottom so the figure shows from head down to the waist */
+    bottom: 0;
+    top: auto;
+    height: min(74vh, 720px);
     width: auto;
     object-fit: contain;
-    -webkit-mask-image: radial-gradient(60% 75% at 55% 45%, #000 55%, transparent 90%);
-    mask-image: radial-gradient(60% 75% at 55% 45%, #000 55%, transparent 90%);
+    object-position: bottom;
+    -webkit-mask-image: radial-gradient(62% 96% at 54% 50%, #000 70%, transparent 95%);
+    mask-image: radial-gradient(62% 96% at 54% 50%, #000 70%, transparent 95%);
     filter: saturate(1.05) contrast(1.02);
     pointer-events: none;
     z-index: 1;
