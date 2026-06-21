@@ -167,14 +167,14 @@ export default function BlogCarousel({ posts, tags }) {
 
       <style>{`
         .carousel-wrap{--card-w:462px;--card-h:602px}
-        .tagbar{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-bottom:2rem}
+        .tagbar{position:relative;z-index:3;display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-bottom:2rem}
         .tag{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
           background:transparent;border:1px solid var(--line);color:var(--text-dim);
           padding:.5rem 1rem;border-radius:999px;cursor:pointer;transition:all .25s var(--ease)}
         .tag:hover{border-color:var(--tc);color:var(--tc)}
         .tag.on{border-color:var(--tc);color:var(--bg-void);background:var(--tc);
           box-shadow:0 0 22px color-mix(in srgb, var(--tc) 55%, transparent)}
-        .stage{position:relative;height:var(--card-h);perspective:1700px;margin-inline:auto;max-width:100%}
+        .stage{position:relative;z-index:1;height:var(--card-h);perspective:1700px;margin-inline:auto;max-width:100%}
         .ring{position:absolute;inset:0;margin:auto;width:var(--card-w);height:var(--card-h);
           transform-style:preserve-3d;transition:transform .8s var(--ease)}
         .card{position:absolute;inset:0;width:var(--card-w);height:var(--card-h);backface-visibility:hidden}
@@ -196,7 +196,7 @@ export default function BlogCarousel({ posts, tags }) {
         /* read button -> bottom-right corner, no underline */
         .card-link{align-self:flex-end;margin-top:auto;font-family:var(--font-mono);font-size:.82rem;
           letter-spacing:.1em;color:var(--cc);text-decoration:none}
-        .controls{display:flex;align-items:center;justify-content:center;gap:1.4rem;margin-top:2rem}
+        .controls{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:1.4rem;margin-top:2rem}
         .controls button{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);
           background:color-mix(in srgb, var(--bg-lighter) 30%, transparent);color:var(--text);
           font-size:1.2rem;cursor:pointer;transition:all .2s var(--ease)}
