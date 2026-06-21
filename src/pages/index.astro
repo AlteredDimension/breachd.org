@@ -112,8 +112,8 @@ const cards = [
     position: absolute;
     right: -4%;
     top: 50%;
-    /* shifted down ~30% from center for a buffer below the breach:d logo */
-    transform: translateY(-20%);
+    /* sits in the lower portion so the breach:d logo clears the face */
+    transform: translateY(2%);
     height: min(92vh, 880px);
     width: auto;
     object-fit: contain;
@@ -127,6 +127,8 @@ const cards = [
     position: relative;
     z-index: 2;
     width: 100%;
+    /* lift the copy block up, away from the picture below */
+    transform: translateY(-7vh);
   }
   .hero-mark {
     font-size: clamp(4rem, 16vw, 12rem);
