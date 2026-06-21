@@ -1,46 +1,49 @@
-# Astro Starter Kit: Basics
+# breach:d
 
-```sh
-npm create astro@latest -- --template basics
+A personal creative domain — themed after **Alter** (Apex Legends) with a cyberpunk undertone.
+Modern, three.js-forward, ominous-but-mysterious. A place for write-ups, work, easter eggs, and fun.
+
+## Stack
+
+- **Astro 6** (static) + **React islands** (`@astrojs/react`)
+- **three.js** via `@react-three/fiber` + `@react-three/drei` — ambient 3D background
+- **GSAP** — the drifting-letters intro
+- Scoped CSS + a palette of CSS custom properties (see `src/styles/global.css`)
+
+## Structure
+
+```
+src/
+├── styles/global.css         # design tokens (palette, type), base, shared utilities
+├── layouts/Layout.astro       # shared shell: head, fonts, nav, 3D bg, footer, easter eggs
+├── components/
+│   ├── Nav.astro              # desktop menu selector (bold-from-origin fading separators)
+│   └── react/
+│       ├── Background.jsx     # mouse-reactive particle field + wireframe "breach" portal
+│       ├── Intro.jsx          # drifting "breach:d" intro (once/session, skippable)
+│       ├── BlogCarousel.jsx   # 3D carousel, tag filtering, per-tag colored outline
+│       └── EyeForm.jsx        # eye-tracking contact form
+├── scripts/easter-eggs.js     # console quotes (Alter/Arrival), Konami reveal, tap-the-wordmark
+├── data/posts.js              # blog posts + tag colors
+└── pages/                     # home (deep) + about, portfolio, blog, blog/[slug], proof, contact
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Status
 
-## 🚀 Project Structure
+Home + intro are built out; the other pages are scaffolded on the shared shell with real content
+where provided and clearly-marked placeholders elsewhere. The contact form has no backend yet.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Commands
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+| Command           | Action                                   |
+| :---------------- | :--------------------------------------- |
+| `npm run dev`     | Dev server (default `localhost:4321`)    |
+| `npm run build`   | Production build to `./dist/`            |
+| `npm run preview` | Preview the build locally                |
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Notes
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- Respects `prefers-reduced-motion` (skips the intro and the 3D canvas) and scales particle
+  count down on small screens.
+- Character art lives in `public/img/` (Apex/Respawn fan art — personal/non-commercial use).
+- Easter eggs: open the console, try the Konami code (↑↑↓↓←→←→ B A), or tap the wordmark 5×.
