@@ -35,7 +35,7 @@ export default function GithubRepos() {
   const maxLang = state.langs[0]?.count || 1;
 
   return (
-    <section class="gh">
+    <section className="gh">
       <div className="gh-head">
         <p className="eyebrow">// version control</p>
         <h2>From the forge</h2>

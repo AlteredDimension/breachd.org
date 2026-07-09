@@ -152,7 +152,12 @@ export default function BlogCarousel({ posts, tags }) {
                   <span key={t} style={{ color: tags[t] }}>#{t}</span>
                 ))}
               </div>
-              <h2>{open.title}</h2>
+              <h2>
+                {/* title links to the post's own static route (/blog/<slug>) */}
+                <a className="post-title-link" href={`/blog/${open.slug}`}>
+                  {open.title}
+                </a>
+              </h2>
               <time>{open.date}</time>
               {!open.real && <p className="draft-note">draft — placeholder copy</p>}
               <div className="post-body">
@@ -218,6 +223,8 @@ export default function BlogCarousel({ posts, tags }) {
         .post-scroll{max-height:88vh;overflow-y:auto;padding:3rem clamp(1.6rem,4vw,3rem)}
         .post-tags{display:flex;gap:.8rem;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em}
         .post-modal h2{font-size:clamp(1.8rem,4vw,2.8rem);margin:.8rem 0 .2rem}
+        .post-title-link{color:inherit;text-decoration:none;transition:color .2s var(--ease)}
+        .post-title-link:hover,.post-title-link:focus-visible{color:var(--cc)}
         .post-modal time{font-family:var(--font-mono);font-size:.74rem;color:var(--text-faint);letter-spacing:.1em}
         .draft-note{font-family:var(--font-mono);font-size:.74rem;color:var(--text-faint)}
         .post-body{margin-top:1.8rem}

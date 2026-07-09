@@ -11,6 +11,35 @@ import { posts, TAGS } from "../../data/posts.js";
       <h1 class="page-title">Blog</h1>
     </header>
     <BlogCarousel client:visible posts={posts} tags={TAGS} />
+
+    <!-- Plain, server-rendered index of every post. This gives the statically
+         built /blog/<slug> routes real inbound links (they were previously
+         orphaned — the carousel opens a modal instead of navigating) and it
+         keeps the feed readable when JavaScript is off, since the carousel is
+         a client-side island that renders nothing without JS. -->
+    <nav class="post-index" aria-label="All posts">
+      <h2 class="post-index__title">// full index</h2>
+      <ul class="post-index__list">
+        {
+          posts.map((p) => (
+            <li class="post-index__item">
+              <a class="post-index__link" href={`/blog/${p.slug}`}>
+                <span class="post-index__name">{p.title}</span>
+                <span class="post-index__meta">
+                  <time datetime={p.date}>{p.date}</time>
+                  {p.tags.map((t) => (
+                    <span class="post-index__tag" style={`color:${TAGS[t]}`}>
+                      #{t}
+                    </span>
+                  ))}
+                  {!p.real && <span class="post-index__draft">draft</span>}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
   </section>
 </Layout>
 
@@ -33,5 +62,71 @@ import { posts, TAGS } from "../../data/posts.js";
   }
   .page-title {
     margin: 0;
+  }
+
+  /* ---- plain post index below the carousel ---- */
+  .post-index {
+    max-width: 720px;
+    width: 100%;
+    margin: 4rem auto 0;
+  }
+  .post-index__title {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+    margin: 0 0 1rem;
+  }
+  .post-index__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .post-index__item {
+    border-top: 1px solid var(--line);
+  }
+  .post-index__link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.4rem 1.4rem;
+    padding: 1rem 0.2rem;
+    color: var(--text);
+    transition: color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .post-index__link:hover .post-index__name,
+  .post-index__link:focus-visible .post-index__name {
+    color: var(--c-accent);
+  }
+  .post-index__name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    transition: color 0.2s var(--ease);
+  }
+  .post-index__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+  }
+  .post-index__draft {
+    border: 1px dashed var(--line);
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.62rem;
+  }
+  @media (max-width: 600px) {
+    .post-index__link {
+      flex-direction: column;
+    }
   }
 </style>
