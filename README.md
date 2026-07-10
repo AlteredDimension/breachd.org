@@ -35,7 +35,7 @@ src/
 Home + intro are built out; the other pages are scaffolded on the shared shell with real content
 where provided and clearly-marked placeholders elsewhere. The contact form has no backend yet.
 
-## Writing a new post from your phone
+## Writing a new post from via phone
 
 Posts are plain markdown files — the whole flow works from the GitHub mobile app:
 
@@ -78,11 +78,11 @@ Details:
 
 ## Commands
 
-| Command           | Action                                   |
-| :---------------- | :--------------------------------------- |
-| `npm run dev`     | Dev server (default `localhost:4321`)    |
-| `npm run build`   | Production build to `./dist/`            |
-| `npm run preview` | Preview the build locally                |
+| Command           | Action                                |
+| :---------------- | :------------------------------------ |
+| `npm run dev`     | Dev server (default `localhost:4321`) |
+| `npm run build`   | Production build to `./dist/`         |
+| `npm run preview` | Preview the build locally             |
 
 ## Notes
 
