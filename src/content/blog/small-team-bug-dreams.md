@@ -1,7 +1,7 @@
 ---
 title: Small Team, Bug Dreams
 date: 2026-07-09
-tags: [cybersecurity][anecdote]
+tags: [cybersecurity, anecdote]
 excerpt: "Working on a team of eight, managing over 3k end users, and holding dreams to grow into something bigger - or should I say bugger."
 draft: false
 ---
