@@ -123,7 +123,7 @@ export default function BlogCarousel({ posts, tags }) {
                         <time>{p.date}</time>
                         <p>{p.excerpt}</p>
                         <span className="card-link">
-                          read {p.real ? "" : "(draft)"} →
+                          read {p.draft ? "(draft)" : ""} →
                         </span>
                       </div>
                     </button>
@@ -159,12 +159,17 @@ export default function BlogCarousel({ posts, tags }) {
                 </a>
               </h2>
               <time>{open.date}</time>
-              {!open.real && <p className="draft-note">draft — placeholder copy</p>}
-              <div className="post-body">
-                {open.body.map((para, k) => (
-                  <p key={k}>{para}</p>
-                ))}
-              </div>
+              {open.draft && <p className="draft-note">draft — placeholder copy</p>}
+              {/* TRUST ASSUMPTION: `open.html` is the post's markdown body,
+                  rendered to HTML at BUILD TIME by Astro's content layer from
+                  files in src/content/blog/ — i.e. the site owner's own
+                  authored content, never user/visitor input. That's the only
+                  reason dangerouslySetInnerHTML is acceptable here; do not
+                  reuse this pattern for anything fetched or user-supplied. */}
+              <div
+                className="post-body"
+                dangerouslySetInnerHTML={{ __html: open.html }}
+              />
             </div>
           </article>
         </div>

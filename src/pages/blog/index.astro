@@ -1,7 +1,27 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import BlogCarousel from "../../components/react/BlogCarousel.jsx";
-import { posts, TAGS } from "../../data/posts.js";
+import { getCollection } from "astro:content";
+import { TAGS } from "../../data/tags.js";
+
+// Posts live in src/content/blog/*.md (see src/content.config.ts). They're
+// flattened here into plain serializable objects because BlogCarousel is a
+// React island — its props get serialized into the page, so no Dates or
+// collection-entry objects, just strings/arrays/booleans.
+// `entry.rendered.html` is the markdown body pre-rendered at build time;
+// the island injects it into the post modal.
+const entries = await getCollection("blog");
+const posts = entries
+  .map((e) => ({
+    slug: e.id,
+    title: e.data.title,
+    date: e.data.date.toISOString().slice(0, 10),
+    tags: e.data.tags,
+    excerpt: e.data.excerpt,
+    draft: e.data.draft,
+    html: e.rendered?.html ?? "",
+  }))
+  .sort((a, b) => b.date.localeCompare(a.date)); // newest first
 ---
 
 <Layout title="blog — breach:d" description="Write-ups, anecdotes, and signal from the field.">
@@ -32,7 +52,7 @@ import { posts, TAGS } from "../../data/posts.js";
                       #{t}
                     </span>
                   ))}
-                  {!p.real && <span class="post-index__draft">draft</span>}
+                  {p.draft && <span class="post-index__draft">draft</span>}
                 </span>
               </a>
             </li>
