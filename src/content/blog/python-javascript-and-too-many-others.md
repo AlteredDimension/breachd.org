@@ -1,7 +1,7 @@
 ---
 title: Python, JavaScript and Too Many Others 
 date: 2026-07-18
-tags: [cybersecurity, app(sec)]
+tags: [cybersecurity, anecdote]
 excerpt: "Question: how many choices for programming languages are there? Answer: too many. I've spent some time bouncing from different ones and I'll tell you what I've learned as someone invested in appsec and bug bounty hunting."
 draft: true
 ---
