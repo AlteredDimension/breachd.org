@@ -53,7 +53,7 @@ jobs:
         run: |
           for target in secondary@100.117.206.72 tertiary@100.88.253.38; do
             ssh-keyscan -H "${target#*@}" >> ~/.ssh/known_hosts 2>/dev/null
-            rsync -avz --delete \
+            rsync -rlptvz --delete \
               -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o UserKnownHostsFile=~/.ssh/known_hosts" \
               dist/ "$target:${{ secrets.REMOTE_TARGET }}/"
           done
