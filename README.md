@@ -76,14 +76,6 @@ Details:
 - **excerpt** is best kept in quotes, as in the template, so punctuation can't
   confuse the frontmatter parser.
 
-## Commands
-
-| Command           | Action                                |
-| :---------------- | :------------------------------------ |
-| `npm run dev`     | Dev server (default `localhost:4321`) |
-| `npm run build`   | Production build to `./dist/`         |
-| `npm run preview` | Preview the build locally             |
-
 ## Notes
 
 - Respects `prefers-reduced-motion` (skips the intro and the 3D canvas) and scales particle
