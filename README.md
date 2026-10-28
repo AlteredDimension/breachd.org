@@ -32,7 +32,7 @@ src/
 ## Status
 
 Home + intro are built out; the other pages are scaffolded on the shared shell with real content
-where provided and clearly-marked placeholders elsewhere. The contact form has no backend yet.
+where provided and clearly-marked placeholders elsewhere.
 
 ## Writing a new post from via phone
 
