@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import EyeForm from "../components/react/EyeForm.jsx";
 import Eyes from "../components/react/Eyes.jsx";
 ---
 
@@ -13,11 +12,12 @@ import Eyes from "../components/react/Eyes.jsx";
         Say something interesting. The eyes follow your cursor — and so do I.
       </p>
       <Eyes client:visible />
-      <p class="note">// no backend is wired yet — this is a working scaffold.</p>
     </div>
 
     <div class="form-col">
-      <EyeForm client:visible />
+      <p class="email-cta">
+        Shoot me an email: <a href="mailto:alt@breachd.org">alt@breachd.org</a>
+      </p>
     </div>
   </section>
 </Layout>
@@ -39,12 +39,14 @@ import Eyes from "../components/react/Eyes.jsx";
     max-width: 36ch;
     margin: 0;
   }
-  .note {
+  .email-cta {
     font-family: var(--font-mono);
-    font-size: 0.74rem;
-    color: var(--text-faint);
-    letter-spacing: 0.08em;
+    font-size: 1.1rem;
+    color: var(--text-dim);
     margin: 0;
+  }
+  .email-cta a {
+    color: var(--c-accent);
   }
   /* stagger: the form sits ~50% lower than the intro block */
   .form-col {

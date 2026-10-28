@@ -1,85 +1,484 @@
 ---
 import Layout from "../layouts/Layout.astro";
-const certs = [
-  { area: "site", claim: "[placeholder] TLS, HSTS, and a strict CSP — the front door is sealed.", status: "todo" },
-  { area: "architecture", claim: "[placeholder] Hardened, least-privilege infra with documented trust boundaries.", status: "todo" },
-  { area: "webapp", claim: "[placeholder] No injection, no leaky headers, no surprises in the response.", status: "todo" },
-  { area: "server", claim: "[placeholder] Patched, monitored, and locked down to the essentials.", status: "todo" },
+
+const stats = [
+  { value: "3/65,535", label: "TCP ports open on mail gateway", tone: "accent" },
+  { value: "0", label: "Lynis warnings (243 tests)", tone: "accent" },
+  { value: "A+", label: "Qualys SSL Labs grade", tone: "accent" },
+  { value: "0", label: "Origin IPs exposed by web edge", tone: "accent" },
 ];
+
+const glance = [
+  { control: "Web origin hidden behind CDN", evidence: "External port scan of breachd.org", status: "verified" },
+  { control: "Minimal mail gateway surface", evidence: "Full 65,535-port external TCP scan", status: "verified" },
+  { control: "No remote admin exposed to internet", evidence: "Full port scan: SSH and admin ports filtered", status: "verified" },
+  { control: "Host audit with zero warnings", evidence: "Lynis system audit, 243 tests", status: "verified" },
+  { control: "Full-disk encryption", evidence: "Lynis cryptography checks", status: "verified" },
+  { control: "Host firewall active", evidence: "Lynis firewall checks", status: "verified" },
+  { control: "Account and file-permission hygiene", evidence: "Lynis authentication and permission checks", status: "verified" },
+  { control: "TLS configuration", evidence: "Qualys SSL Labs: A+ on all edge addresses", status: "verified" },
+  { control: "HSTS enforced", evidence: "Qualys SSL Labs (A+ requires long-lived HSTS)", status: "verified" },
+  { control: "Service sandboxing and kernel hardening", evidence: "systemd-analyze security, sysctl review", status: "progress" },
+  { control: "Content Security Policy and other headers", evidence: "Mozilla HTTP Observatory", status: "pending" },
+  { control: "Web application testing", evidence: "OWASP ZAP baseline scan", status: "pending" },
+];
+
+const tools = [
+  { tool: "nmap", version: "7.99", tested: "Open ports and services, web edge and mail gateway", date: "2026-10-28" },
+  { tool: "Lynis", version: "3.1.6", tested: "Host configuration and hardening, primary server", date: "2026-10-28" },
+  { tool: "SSL Labs", version: "2.4.3", tested: "TLS protocols, ciphers, certificate and HSTS at the edge", date: "2026-10-28" },
+];
+
+const edgePorts = [
+  { port: "80/tcp", state: "open", service: "HTTP: CDN proxy" },
+  { port: "443/tcp", state: "open", service: "HTTPS: CDN proxy" },
+  { port: "8080/tcp", state: "open", service: "HTTP: CDN proxy (standard alternate port)" },
+  { port: "8443/tcp", state: "open", service: "HTTPS: CDN proxy (standard alternate port)" },
+  { port: "996 others", state: "filtered", service: "No response" },
+];
+
+const mailPorts = [
+  { port: "25/tcp", state: "open", service: "SMTP: inbound mail (required for email delivery)" },
+  { port: "80/tcp", state: "open", service: "HTTP" },
+  { port: "443/tcp", state: "open", service: "HTTPS" },
+  { port: "65,532 others", state: "filtered", service: "No response, including SSH and all admin, database and management ports" },
+];
+
+const lynisStats = [
+  { value: "0", label: "Warnings", tone: "accent" },
+  { value: "243", label: "Tests run", tone: "primary" },
+  { value: "29", label: "Suggestions", tone: "amber" },
+  { value: "60", label: "Hardening index", tone: "amber" },
+];
+
+const confirmed = [
+  "Full-disk encryption on the server’s storage.",
+  "Active host-based firewall, and no network interfaces in promiscuous mode.",
+  "Fully declarative operating system configuration: the server’s state is defined in version-controlled code and rebuilt from it, so it can’t drift silently.",
+  "No accounts without passwords, unique user and group IDs, correct sudoers permissions.",
+  "Correct permissions on critical files: account databases, SSH configuration and the root SSH directory.",
+  "Kernel memory protections: address-space randomization, restricted kernel log access, ptrace restrictions, and protected symlinks and hardlinks.",
+  "Several services already run inside strict systemd sandboxes, rated “protected” by systemd’s own exposure analysis.",
+];
+
+const gaps = [
+  { item: "Service isolation", change: "Tighter systemd sandboxing for the internet-facing mail service and database stack", status: "progress" },
+  { item: "Kernel parameters", change: "Apply hardened sysctl values and disable unused network protocols", status: "progress" },
+  { item: "Information disclosure", change: "Remove software version banners from the mail gateway", status: "progress" },
+  { item: "Audit logging", change: "Enable kernel audit logging and off-host log retention", status: "progress" },
+  { item: "Gateway audit", change: "Run the same host audit on the mail gateway", status: "pending" },
+  { item: "Mail security", change: "Publish open-relay, STARTTLS and SPF/DKIM/DMARC/MTA-STS results", status: "pending" },
+  { item: "Web headers and app", change: "Content Security Policy review, HTTP Observatory and OWASP ZAP baseline results", status: "pending" },
+  { item: "TLS grade", change: "TLS 1.2 minimum and HSTS enforced at the edge: SSL Labs A+", status: "verified" },
+];
+
+const statusLabel = { verified: "verified", progress: "in progress", pending: "pending" };
 ---
 
-<Layout title="proof — breach:d" description="Receipts: this site is configured securely.">
-  <section class="page shell">
+<Layout title="proof — breach:d" description="Receipts: the scans and audits run against breach:d's public infrastructure.">
+  <section class="page shell proof">
     <p class="eyebrow">// receipts</p>
-    <h1 class="page-title">Proof</h1>
+    <h1 class="page-title">Security Evidence</h1>
     <p class="sub">
-      A security site should be able to prove its own. This page will hold the evidence — config,
-      architecture, web app, and server. Placeholders for now.
+      A security site should be able to prove its own. This page collects the scans and audits run
+      against breach:d’s public infrastructure on 28 October 2026: what was tested, what passed, and
+      what is still being fixed. Nothing here is a claim without a test behind it.
+    </p>
+    <p class="meta">
+      Report v1.1 · 2026-10-28 ·
+      <a href="/breachd-security-evidence-2026-10-v1.1.pdf">download the PDF</a>
     </p>
 
-    <div class="certs">
+    <div class="stats">
       {
-        certs.map((c) => (
-          <div class="cert">
-            <div class="cert-head">
-              <span class="cert-area">{c.area}</span>
-              <span class={"cert-status " + c.status}>{c.status === "todo" ? "pending" : "verified"}</span>
-            </div>
-            <p>{c.claim}</p>
+        stats.map((s) => (
+          <div class="stat">
+            <span class={"stat-value " + s.tone}>{s.value}</span>
+            <span class="stat-label">{s.label}</span>
           </div>
         ))
       }
     </div>
+
+    <h2>Status at a glance</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Control</th><th>Evidence</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {
+            glance.map((r) => (
+              <tr>
+                <td>{r.control}</td>
+                <td>{r.evidence}</td>
+                <td><span class={"status " + r.status}>{statusLabel[r.status]}</span></td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h2><span class="num">01</span> Scope and method</h2>
+    <p>
+      All network scans were run by the site owner from an external network, against infrastructure
+      breach:d owns and operates. The host audit was run locally on the primary server. Tools are open
+      source or publicly available, so anyone can reproduce the external results.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Tool</th><th>Version</th><th>What it tested</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          {
+            tools.map((t) => (
+              <tr>
+                <td>{t.tool}</td>
+                <td class="mono">{t.version}</td>
+                <td>{t.tested}</td>
+                <td class="mono">{t.date}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">
+      Redactions: this public version omits server hostnames, origin and gateway IP addresses, internal
+      network details, software versions and the internal service inventory. These details help attackers
+      more than they help readers, and leaving them out doesn’t change any result.
+    </p>
+
+    <h2><span class="num">02</span> External attack surface</h2>
+    <h3>Web edge</h3>
+    <p>
+      breachd.org resolves only to CDN edge addresses (four anycast addresses across IPv4 and IPv6). An
+      external scan of the top 1,000 TCP ports finds only the CDN’s proxy listening:
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Port</th><th>State</th><th>Service</th></tr>
+        </thead>
+        <tbody>
+          {
+            edgePorts.map((p) => (
+              <tr>
+                <td class="mono">{p.port}</td>
+                <td>{p.state}</td>
+                <td>{p.service}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">
+      Ports 8080 and 8443 are answered by the CDN for every proxied domain, not by breach:d’s servers. No
+      response from the scan identifies or reaches the origin server.
+    </p>
+
+    <h3>Mail gateway</h3>
+    <p>
+      The mail gateway must be publicly reachable to receive email, so it was scanned across
+      <strong>all 65,535 TCP ports</strong>. Only three answer:
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Port</th><th>State</th><th>Service</th></tr>
+        </thead>
+        <tbody>
+          {
+            mailPorts.map((p) => (
+              <tr>
+                <td class="mono">{p.port}</td>
+                <td>{p.state}</td>
+                <td>{p.service}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p>Remote administration is not reachable from the public internet.</p>
+
+    <h2><span class="num">03</span> Host hardening audit</h2>
+    <p>
+      The primary server was audited with Lynis, a widely used open-source auditing tool for Linux
+      systems. It ran 243 tests across boot, kernel, authentication, file systems, networking, logging,
+      cryptography and installed software.
+    </p>
+    <div class="stats">
+      {
+        lynisStats.map((s) => (
+          <div class="stat">
+            <span class={"stat-value " + s.tone}>{s.value}</span>
+            <span class="stat-label">{s.label}</span>
+          </div>
+        ))
+      }
+    </div>
+    <h3>Confirmed in place</h3>
+    <ul class="checks">
+      {confirmed.map((c) => <li>{c}</li>)}
+    </ul>
+    <h3>About the hardening index</h3>
+    <p>
+      Lynis assumes a traditional Linux layout. The server runs NixOS, where configuration lives in an
+      immutable store, so several checks can’t see controls that are in place. For example, Lynis flagged
+      time synchronization as missing while the time daemon was running and sandboxed. These false
+      positives lower the index. Rather than tune the scanner to hide them, breach:d publishes the raw
+      index and will report the post-remediation score in the next revision.
+    </p>
+
+    <h2><span class="num">04</span> Transport security</h2>
+    <p>
+      Qualys SSL Labs grades every edge address serving breachd.org <strong>A+</strong>, the highest
+      grade it awards, across all four IPv4 and IPv6 anycast addresses.
+    </p>
+    <p>
+      Getting there meant two changes at the CDN edge: retiring the legacy TLS 1.0 and 1.1 protocols, so
+      connections now require TLS 1.2 or 1.3, and enforcing HTTP Strict Transport Security, so browsers
+      refuse to connect over plain HTTP once they’ve seen the site. The previous scan (25 August 2026)
+      graded B, and this report keeps that history rather than hiding it.
+    </p>
+    <p class="fine">
+      Rerun it at
+      <a href="https://www.ssllabs.com/ssltest/analyze.html?d=breachd.org" rel="noopener noreferrer">ssllabs.com/ssltest/analyze.html?d=breachd.org</a>.
+    </p>
+
+    <h2><span class="num">05</span> Known gaps and remediation plan</h2>
+    <p>
+      No system is finished. These are the open items from this round of testing, plus what has already
+      been closed, published so progress can be checked against them:
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Item</th><th>Planned change</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {
+            gaps.map((g) => (
+              <tr>
+                <td>{g.item}</td>
+                <td>{g.change}</td>
+                <td><span class={"status " + g.status}>{statusLabel[g.status]}</span></td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <h2><span class="num">06</span> Verify it yourself</h2>
+    <p>The external results don’t require trusting this page. Anyone can rerun them:</p>
+    <ul class="checks">
+      <li>
+        <strong>TLS:</strong> run breachd.org through
+        <a href="https://www.ssllabs.com/ssltest/" rel="noopener noreferrer">Qualys SSL Labs</a>.
+      </li>
+      <li>
+        <strong>Headers:</strong> run breachd.org through
+        <a href="https://developer.mozilla.org/observatory" rel="noopener noreferrer">Mozilla HTTP Observatory</a>.
+      </li>
+      <li>
+        <strong>Ports:</strong> <code>nmap -sV -Pn breachd.org</code> should show only CDN proxy ports.
+      </li>
+    </ul>
+    <p>
+      Found something this report missed? Please report it through the <a href="/contact">Contact</a> page.
+      Responsible disclosure is welcome and credited.
+    </p>
+    <p class="fine">
+      Next revision: after the remediation items above are completed. Scans are repeated at least quarterly.
+    </p>
   </section>
 </Layout>
 
 <style>
+  .proof {
+    --amber: #e8b86a;
+    max-width: 960px;
+  }
+  :global(:root[data-theme="light"]) .proof {
+    --amber: #a8700f;
+  }
   .sub {
     color: var(--text-dim);
-    max-width: 60ch;
-    margin-bottom: 3rem;
+    max-width: 66ch;
+    margin: 0 0 1rem;
   }
-  .certs {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.2rem;
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    margin: 0 0 2.4rem;
   }
-  .cert {
-    padding: 1.6rem;
-    border-radius: 14px;
-    border: 1px solid var(--line);
-    background: rgba(38, 28, 53, 0.4);
+  .meta a {
+    color: var(--c-accent);
   }
-  .cert-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.8rem;
-  }
-  .cert-area {
+  .proof h2 {
     font-family: var(--font-display);
-    font-size: 1.2rem;
     color: var(--c-primary);
-    text-transform: capitalize;
+    font-size: 1.6rem;
+    margin: 3.2rem 0 1rem;
   }
-  .cert-status {
+  .proof h3 {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+    margin: 2rem 0 0.6rem;
+  }
+  .num {
+    margin-right: 0.4rem;
+  }
+  .proof p {
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin: 0 0 1rem;
+  }
+  .proof p strong {
+    color: var(--text);
+  }
+  .fine {
+    font-size: 0.85rem;
+    color: var(--text-faint);
+  }
+  .proof a {
+    color: var(--c-accent);
+  }
+  .proof code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--text);
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(38, 28, 53, 0.4);
+    margin: 0 0 1.4rem;
+    overflow: hidden;
+  }
+  .stat {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+    padding: 1.3rem 1.4rem;
+    border-left: 1px solid var(--line);
+  }
+  .stat:first-child {
+    border-left: 0;
+  }
+  .stat-value {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    line-height: 1;
+  }
+  .stat-value.accent { color: var(--c-accent); }
+  .stat-value.primary { color: var(--c-primary); }
+  .stat-value.amber { color: var(--amber); }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(38, 28, 53, 0.4);
+    margin: 0 0 1.2rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  th {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 0.8rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 0.8rem 1.1rem;
+    border-top: 1px solid var(--line);
+    color: var(--text);
+    vertical-align: top;
+  }
+  tbody tr:first-child td {
+    border-top: 0;
+  }
+  td.mono {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+  .status {
+    display: inline-block;
     font-family: var(--font-mono);
     font-size: 0.64rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
+    white-space: nowrap;
     padding: 0.3rem 0.7rem;
     border-radius: 999px;
     border: 1px solid var(--line);
-  }
-  .cert-status.todo {
     color: var(--text-faint);
   }
-  .cert-status.done {
+  .status.verified {
     color: var(--c-accent);
     border-color: rgba(99, 207, 183, 0.4);
   }
-  .cert p {
-    margin: 0;
-    font-size: 0.92rem;
+  .status.progress {
+    color: var(--amber);
+    border-color: color-mix(in srgb, var(--amber) 45%, transparent);
+  }
+
+  .checks {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.2rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .checks li {
+    position: relative;
+    padding-left: 1.2rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .checks li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: var(--c-accent);
+  }
+
+  @media (max-width: 600px) {
+    .stat {
+      border-left: 0;
+      border-top: 1px solid var(--line);
+    }
+    .stat:first-child {
+      border-top: 0;
+    }
   }
 </style>

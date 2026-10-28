@@ -22,7 +22,6 @@ src/
 │       ├── Background.jsx     # mouse-reactive particle field + wireframe "breach" portal
 │       ├── Intro.jsx          # drifting "breach:d" intro (once/session, skippable)
 │       ├── BlogCarousel.jsx   # 3D carousel, tag filtering, per-tag colored outline
-│       └── EyeForm.jsx        # eye-tracking contact form
 ├── scripts/easter-eggs.js     # console quotes (Alter/Arrival), Konami reveal, tap-the-wordmark
 ├── content/blog/*.md          # THE BLOG POSTS — one markdown file per post (file name = URL slug)
 ├── content.config.ts          # blog frontmatter schema (validates every post at build time)
